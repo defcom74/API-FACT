@@ -477,6 +477,53 @@ $app -> get('/SorianaByDate/{iId}/Date/{sDate}', function($request, $response, $
 
 });
 
+
+//****************************web page api
+
+$app -> get('Web/UserById/{iId}', function($request, $response, $arg){
+    try{
+        $iId = $args['iId'];
+        $res = array();
+        $db = new DbHandler();
+
+        $res = $db -> getUserById($iId);
+        return echoResponse(200, $response, $res);
+
+    }catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
+$app -> get('Web/ReportsBySorinanaId/{iId}', function($request, $response, $arg){
+    try{
+        $iId = $args['iId'];
+        $res = array();
+        $db = new DbHandler();
+
+        $res = $db -> getReports(10, $iId);
+        return echoResponse(200, $response, $res);
+
+    }catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
+
+$app -> get('Web/UserByLogin/{sLogin}', function($request, $response, $arg){
+    try{
+        $sLogin = $args['sLogin'];
+        $res = array();
+        $db = new DbHandler();
+
+        $res = $db -> getUserByUser($sLogin);
+        return echoResponse(200, $response, $res);
+
+    }catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
+
 $app -> run();
 
 ?>
