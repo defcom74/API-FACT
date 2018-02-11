@@ -291,10 +291,10 @@ function getDatos($iId, $sDate, $dtFecha){
             $iSorianaId = $iId;
             $result = $db -> getApiSorianaInfo( $iSorianaId );
             while ($task = $result -> fetch_assoc()) {
-		$tmp = array();
-		$tmp["iUserId"] = $task["iUserId"];
-		$tmp["sUserWebService"] = $task["sUserWebService"];
-		$tmp["sPasswordWebService"] = $task["sPasswordWebService"];
+    		$tmp = array();
+    		$tmp["iUserId"] = $task["iUserId"];
+    		$tmp["sUserWebService"] = $task["sUserWebService"];
+    		$tmp["sPasswordWebService"] = $task["sPasswordWebService"];
 				
             }
             if ($tmp != NULL)
@@ -444,7 +444,7 @@ function getDatos($iId, $sDate, $dtFecha){
                 $res["error"] = true;
                 $res["info"] = array();
                 $tmp = array();
-		$tmp["sMsg"] = "Soriana Id dont exist " . $args['iId'];
+		        $tmp["sMsg"] = "Soriana Id dont exist " . $args['iId'];
                 $res["info"] = $tmp;
                 return $res  ;
 
@@ -480,45 +480,140 @@ $app -> get('/SorianaByDate/{iId}/Date/{sDate}', function($request, $response, $
 
 //****************************web page api
 
-$app -> get('Web/UserById/{iId}', function($request, $response, $arg){
+$app -> get('/Web/UserById/{iId}', function($request, $response, $arg){
     try{
-        $iId = $args['iId'];
+        $iId = (int) $request->getAttribute('iId');
         $res = array();
         $db = new DbHandler();
 
-        $res = $db -> getUserById($iId);
+        $res["error"] = false;
+        $res["UserById"] = array();
+       
+
+        $result = $db -> getUserById($iId);
+
+
+         // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+
+                    array_push($res["UserById"], $tmp);
+                    //sleep(10);
+
+            }
         return echoResponse(200, $response, $res);
 
-    }catch (Exception $ex) {
+    } catch (Exception $ex) {
        var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
    }
 });
 
-$app -> get('Web/ReportsBySorinanaId/{iId}', function($request, $response, $arg){
+$app -> get('/Web/ReportsBySorinanaId/{iId}', function($request, $response, $arg){
     try{
-        $iId = $args['iId'];
+        $iId =  (int) $request->getAttribute('iId');
         $res = array();
         $db = new DbHandler();
+        $res["error"] = false;
+        $res["Report"] = array();
 
-        $res = $db -> getReports(10, $iId);
+        $result = $db -> getSorianaReports(20, $iId);
+
+        // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+                    array_push($res["Report"], $tmp);
+                    //sleep(10);
+
+            }
         return echoResponse(200, $response, $res);
 
-    }catch (Exception $ex) {
+    } catch (Exception $ex) {
        var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
    }
 });
 
 
-$app -> get('Web/UserByLogin/{sLogin}', function($request, $response, $arg){
+$app -> get('/Web/DocumentsByReportId/{iId}/SorianaId/{iSorId}', function($request, $response, $arg){
     try{
-        $sLogin = $args['sLogin'];
+        $iReporteId =  (int) $request->getAttribute('iId');
+        $iSorianaId =  (int) $request->getAttribute('iSorId');
         $res = array();
         $db = new DbHandler();
+        $res["error"] = false;
+        $res["Docs"] = array();
 
-        $res = $db -> getUserByUser($sLogin);
+        $result = $db -> getSorianaDocs($iReporteId, $iSorianaId);
+
+        // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+                    array_push($res["Docs"], $tmp);
+                    //sleep(10);
+
+            }
         return echoResponse(200, $response, $res);
 
-    }catch (Exception $ex) {
+    } catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
+
+$app -> get('/Web/ArticulosByDocumentId/{iId}', function($request, $response, $arg){
+    try{
+        $iDocumentId =  (int) $request->getAttribute('iId');
+       
+        $res = array();
+        $db = new DbHandler();
+        $res["error"] = false;
+        $res["Articulos"] = array();
+
+        $result = $db -> getSorianaArticulos($iDocumentId);
+
+        // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+                    array_push($res["Articulos"], $tmp);
+                    //sleep(10);
+
+            }
+        return echoResponse(200, $response, $res);
+
+    } catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
+
+$app -> get('/Web/UserByLogin/{sLogin}', function($request, $response, $arg){
+    try{
+        $sLogin =  $request->getAttribute('sLogin');
+        $res = array();
+        $db = new DbHandler();
+        $res["error"] = false;
+        $res["Users"] = array();
+
+        $result = $db -> getUserByUser($sLogin);
+        // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+                    array_push($res["Users"], $tmp);
+                    //sleep(10);
+
+            }
+        return echoResponse(200, $response, $res);
+
+    } catch (Exception $ex) {
        var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
    }
 });

@@ -477,10 +477,27 @@ public function isServerIPExistsById($iServerId){
  * @param String $email User email id
  */
 public function getUserByEmail($email) {
-	$stmt=$this->conn->prepare("SELECT name, email, api_key, status, created_at FROM users WHERE email = ?");
+	$stmt=$this->conn->prepare("SELECT name, email, api_key, status, created_at FROM users WHERE email = ? ");
 	$stmt->bind_param("s",$email);
 	if($stmt->execute()) {
 		$user=$stmt->get_result()->fetch_assoc();
+		$stmt->close();
+		return $user;
+	} else {
+		return NULL;
+	}
+}
+
+
+/**
+ * Fetching Soriana Data User Id
+ * @param Int $iId User  id
+ */
+public function getSorianaDataById($iId) {
+	$stmt=$this->conn->prepare("SELECT * FROM tblSorianaData WHERE iUserId = ? ");
+	$stmt->bind_param("i",$iId);
+	if($stmt->execute()) {
+		$user=$stmt->get_result();
 		$stmt->close();
 		return $user;
 	} else {
@@ -493,10 +510,10 @@ public function getUserByEmail($email) {
  * @param Int $iId User  id
  */
 public function getUserById($iId) {
-	$stmt=$this->conn->prepare("SELECT * FROM tblUsers WHERE iId = ?");
+	$stmt=$this->conn->prepare("SELECT * FROM tblUsers WHERE iId = ? ");
 	$stmt->bind_param("i",$iId);
 	if($stmt->execute()) {
-		$user=$stmt->get_result()->fetch_assoc();
+		$user=$stmt->get_result();
 		$stmt->close();
 		return $user;
 	} else {
@@ -509,10 +526,10 @@ public function getUserById($iId) {
  * @param String $sLogin User Login
  */
 public function getUserByUser($sLogin) {
-	$stmt=$this->conn->prepare("SELECT * FROM tblUsers WHERE sUser = ?");
+	$stmt=$this->conn->prepare("SELECT * FROM tblUsers WHERE sUser = ? ");
 	$stmt->bind_param("s",$sLogin);
 	if($stmt->execute()) {
-		$user=$stmt->get_result()->fetch_assoc();
+		$user=$stmt->get_result();
 		$stmt->close();
 		return $user;
 	} else {
@@ -522,14 +539,48 @@ public function getUserByUser($sLogin) {
 
 
 /**
- * Fetching Last N Reports that are active
+ * Fetching Soriana Acticulos By Documento Id
  * @param Int $iNum Number of reports to return order by last first
  */
-public function getReports($iNum, $iSorianaId) {
+public function getSorianaArticulos($iDocumentoId) {
+	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaArticulos` WHERE iDocumentoId =  ? AND bActive = 1  ");
+	$stmt->bind_param("i",$iDocumentoId );
+	if($stmt->execute()) {
+		$user=$stmt->get_result();
+		$stmt->close();
+		return $user;
+	} else {
+		return NULL;
+	}
+}
+
+/**
+ * Fetching Soriana Documents By Reporte Id, Soriana Id
+ * @param Int $iNum Number of reports to return order by last first
+ */
+public function getSorianaDocs($ReporteId, $iSorianaId) {
+	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaDocumentos` WHERE iReporteId =  ? AND bActive = 1 AND iSorianaId = ? ");
+	$stmt->bind_param("ii",$ReporteId, $iSorianaId );
+	if($stmt->execute()) {
+		$user=$stmt->get_result();
+		$stmt->close();
+		return $user;
+	} else {
+		return NULL;
+	}
+}
+
+
+
+/**
+ * Fetching Soriana Documents
+ * @param Int $iNum Number of reports to return order by last first
+ */
+public function getSorianaReports($iNum, $iSorianaId) {
 	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaReporte` WHERE iDocumentos > 0 AND bActive = 1 AND iSorianaId = ? ORDER BY dtCreateDate DESC LIMIT  ?");
 	$stmt->bind_param("ii",$iSorianaId, $iNum);
 	if($stmt->execute()) {
-		$user=$stmt->get_result()->fetch_assoc();
+		$user=$stmt->get_result();
 		$stmt->close();
 		return $user;
 	} else {
