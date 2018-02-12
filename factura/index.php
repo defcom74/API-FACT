@@ -510,6 +510,38 @@ $app -> get('/Web/UserById/{iId}', function($request, $response, $arg){
    }
 });
 
+
+
+$app -> get('/Web/SorianaDataByUserId/{iId}', function($request, $response, $arg){
+    try{
+        $iId = (int) $request->getAttribute('iId');
+        $res = array();
+        $db = new DbHandler();
+
+        $res["error"] = false;
+        $res["UserById"] = array();
+       
+
+        $result = $db -> getSorianaDataByUserId($iId);
+
+
+         // looping through result and preparing tasks array
+            while ($task = $result -> fetch_assoc()) {
+                    $tmp = array();
+                    $tmp = $task;
+                   
+
+                    array_push($res["UserById"], $tmp);
+                    //sleep(10);
+
+            }
+        return echoResponse(200, $response, $res);
+
+    } catch (Exception $ex) {
+       var_dump('Error Web UserbyId -> ' . $ex -> getMessage() . $ex);
+   }
+});
+
 $app -> get('/Web/ReportsBySorinanaId/{iId}', function($request, $response, $arg){
     try{
         $iId =  (int) $request->getAttribute('iId');

@@ -522,6 +522,22 @@ public function getUserById($iId) {
 }
 
 /**
+ * Fetching user by User Id
+ * @param Int $iId User  id
+ */
+public function getSorianaDataByUserId($iId) {
+	$stmt=$this->conn->prepare("SELECT * FROM tblSorianaData WHERE iUserId = ? ");
+	$stmt->bind_param("i",$iId);
+	if($stmt->execute()) {
+		$user=$stmt->get_result();
+		$stmt->close();
+		return $user;
+	} else {
+		return NULL;
+	}
+}
+
+/**
  * Fetching user by User User Login
  * @param String $sLogin User Login
  */
