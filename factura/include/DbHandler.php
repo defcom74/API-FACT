@@ -574,9 +574,9 @@ public function getSorianaArticulos($iDocumentoId) {
  * Fetching Soriana Documents By Reporte Id, Soriana Id
  * @param Int $iNum Number of reports to return order by last first
  */
-public function getSorianaDocs($ReporteId, $iSorianaId) {
-	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaDocumentos` WHERE iReporteId =  ? AND bActive = 1 AND iSorianaId = ? ");
-	$stmt->bind_param("ii",$ReporteId, $iSorianaId );
+public function getSorianaDocs($ReporteId, $DocId, $iSorianaId) {
+	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaDocumentos` WHERE iReporteId =  ? AND iId = ? AND bActive = 1 AND iSorianaId = ? ");
+	$stmt->bind_param("iii",$ReporteId, $DocId, $iSorianaId );
 	if($stmt->execute()) {
 		$user=$stmt->get_result();
 		$stmt->close();
@@ -593,7 +593,7 @@ public function getSorianaDocs($ReporteId, $iSorianaId) {
  * @param Int $iNum Number of reports to return order by last first
  */
 public function getSorianaReports($iNum, $iSorianaId) {
-	$stmt=$this->conn->prepare("SELECT * FROM `tblSorianaReporte` WHERE iDocumentos > 0 AND bActive = 1 AND iSorianaId = ? ORDER BY dtCreateDate DESC LIMIT  ?");
+	$stmt=$this->conn->prepare("SELECT rep.*, docs.*, docs.iId AS iIdDocs, rep.iId AS iIdrep FROM tblSorianaReporte AS rep, tblSorianaDocumentos AS docs WHERE rep.iDocumentos > 0 AND docs.bActive = 1 AND rep.iSorianaId = ? AND rep.iId = docs.iReporteId ORDER BY rep.dtCreateDate DESC LIMIT  ? ");
 	$stmt->bind_param("ii",$iSorianaId, $iNum);
 	if($stmt->execute()) {
 		$user=$stmt->get_result();

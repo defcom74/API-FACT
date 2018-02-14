@@ -569,16 +569,17 @@ $app -> get('/Web/ReportsBySorinanaId/{iId}', function($request, $response, $arg
 });
 
 
-$app -> get('/Web/DocumentsByReportId/{iId}/SorianaId/{iSorId}', function($request, $response, $arg){
+$app -> get('/Web/DocumentsByReportId/{iId}/DocId/{iDocId}/SorianaId/{iSorId}', function($request, $response, $arg){
     try{
         $iReporteId =  (int) $request->getAttribute('iId');
         $iSorianaId =  (int) $request->getAttribute('iSorId');
+        $iDocId =  (int) $request->getAttribute('iDocId');
         $res = array();
         $db = new DbHandler();
         $res["error"] = false;
         $res["Docs"] = array();
 
-        $result = $db -> getSorianaDocs($iReporteId, $iSorianaId);
+        $result = $db -> getSorianaDocs($iReporteId, $iDocId, $iSorianaId);
 
         // looping through result and preparing tasks array
             while ($task = $result -> fetch_assoc()) {
